@@ -1,0 +1,6 @@
+framework module Pods_TestCocktailDB {
+  umbrella header "Pods-TestCocktailDB-umbrella.h"
+
+  export *
+  module * { export * }
+}
