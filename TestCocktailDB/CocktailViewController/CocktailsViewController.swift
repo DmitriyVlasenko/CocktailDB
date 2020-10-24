@@ -10,20 +10,36 @@ import UIKit
 import Alamofire
 import SDWebImage
 final class CocktailsViewController: UITableViewController {
+    
+    
+    //MARK: - Properties -
+    
     var cocktailData = [[CocktailModel]]()
     var categories = [String]()
     var selectedCategories = [String]()
     var isloadingData = false
+    
+    
+    //MARK: - Outlets -
+    
     @IBOutlet weak var filtersButton: UIBarButtonItem!
+    
+    
+    //MARK: - LifeCycle -
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadCategories {
-                self.selectedCategories = self.categories
-                  self.loadDrinks(forCategory: self.categories[0]) {
-                                    self.tableView.reloadData()
-                  }
-              }
+            self.selectedCategories = self.categories
+            self.loadDrinks(forCategory: self.categories[0]) {
+                self.tableView.reloadData()
+            }
+        }
     }
+    
+    
+    // MARK: - Functions -
+    
     func filterApplied(filterCategories: [String]) {
         self.selectedCategories = filterCategories
         self.cocktailData = []
@@ -32,17 +48,20 @@ final class CocktailsViewController: UITableViewController {
             self.tableView.reloadData()
         }
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-         if segue.destination is FiltersViewController
-           {
+        if segue.destination is FiltersViewController
+        {
             let vc = segue.destination as? FiltersViewController
             for i in 0...categories.count-1 {
                 vc?.categories.append(FiltersTableViewCellModel(category: categories[i]))
             }
             vc?.cocktailsvc = self
-           }
+        }
     }
- 
+    
+    // MARK: - DataSource -
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cocktailData[section].count
     }
@@ -61,18 +80,18 @@ final class CocktailsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section != selectedCategories.count - 1 {
             if indexPath.section == cocktailData.count - 1 {
-                   if indexPath.row == cocktailData[indexPath.section].count - 1 {
-                   if cocktailData.count < selectedCategories.count {
-                   if !isloadingData {
-                       loadDrinks(forCategory: selectedCategories[cocktailData.count]) {
-                            self.tableView.reloadData()
-                       }
-                       }
-                   }
-                   }
-               }
+                if indexPath.row == cocktailData[indexPath.section].count - 1 {
+                    if cocktailData.count < selectedCategories.count {
+                        if !isloadingData {
+                            loadDrinks(forCategory: selectedCategories[cocktailData.count]) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    }
+                }
+            }
         }
-   
+        
     }
 }
 
@@ -86,10 +105,10 @@ extension CocktailsViewController {
             else {
                 let value = response.result.value! as! NSDictionary
                 guard let arrayOfItems = value["drinks"] as? [[String:AnyObject]]
-                            else {
-                                print("Не могу перевести в массив")
-                                return
-                        }
+                else {
+                    print("Не могу перевести в массив")
+                    return
+                }
                 for itm in arrayOfItems {
                     self.categories.append(itm["strCategory"] as! String)
                 }
@@ -108,10 +127,10 @@ extension CocktailsViewController {
             else {
                 let value = response.result.value! as! NSDictionary
                 guard let arrayOfItems = value["drinks"] as? [[String:AnyObject]]
-                                          else {
-                                              print("Не могу перевести в массив")
-                                              return
-                                      }
+                else {
+                    print("Не могу перевести в массив")
+                    return
+                }
                 var returnedData : [CocktailModel] = []
                 for item in arrayOfItems {
                     returnedData.append(CocktailModel(name: item["strDrink"] as! String, imageUrl: item["strDrinkThumb"] as! String))

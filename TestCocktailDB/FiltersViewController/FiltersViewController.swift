@@ -8,9 +8,21 @@
 
 import UIKit
 final class FiltersViewController : UIViewController {
+    
+    
+    // MARK: - Properties -
+    
     var categories : [FiltersTableViewCellModel] = []
     var cocktailsvc : CocktailsViewController!
+    
+    
+    // MARK: - Outlets -
+    
     @IBOutlet weak var filtersButton: UIButton!
+    
+    
+    // MARK: - Lifecycle -
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         filtersButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -43,6 +55,9 @@ final class FiltersViewController : UIViewController {
         }
     }
 }
+
+
+
 extension FiltersViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories.count
